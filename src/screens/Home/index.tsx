@@ -1,4 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
+import React,{ useState } from 'react';
 import {Text, View, TextInput, TouchableOpacity, ScrollView, FlatList, Alert } from 'react-native';
 
 import {styles} from './styles'
@@ -7,19 +8,23 @@ import { Participant } from '../../components/Participant';
 
 export function Home() {
 
-  const participants = ['1', '2', '3', '4', '5', '6', '7', '8'];
+  const [participants, setParticipants] = useState<string[]>([]);
+  const [name, setName] = useState<string>('');
 
-  function handleParticipantAdd(){
-    console.log('opaaa');
-    if(participants.includes("1")){
+  function handleParticipantAdd(name: string){
+    if(participants.includes(name)){
       return Alert.alert(`Participant  already added`);
     }
+    setParticipants(prevState => [...prevState, name]);
+    setName('');
   }
   function handlerParticipantRemove(name:string){
+
+    
     Alert.alert("Remover", `Remover o participante ${name}?`, [
       {
         text: "Sim",
-        onPress:()=>Alert.alert("Deletado")
+        onPress:() => setParticipants(prevState => prevState.filter(participant => participant !== name))
       },
       {
         text: "Não",
@@ -41,10 +46,12 @@ export function Home() {
           style={styles.input} 
           placeholder="Nome do participante"
           placeholderTextColor="#6b6b6b"
+          onChangeText={setName}
+          value={name}
         />
         <TouchableOpacity 
           style={styles.button}
-          onPress={handleParticipantAdd}
+          onPress={() => handleParticipantAdd(name)}
         >
           <Text style={styles.buttonText}>
             +
